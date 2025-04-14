@@ -1,7 +1,7 @@
 
 
 
-
+import KeycrmOpenApi
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
 
 
-    order_data = get_order_data(order_id)
+    order_data = KeycrmOpenApi.get_order_data(order_id)
 
     order_products = order_data['products']
 
