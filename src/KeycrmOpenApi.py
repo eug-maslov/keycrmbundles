@@ -28,3 +28,14 @@ class KeycrmOpenApi:
         return response.json()
     
 
+    
+    @classmethod
+    def get_product_data_by_id(cls, product_id):
+
+        response = requests.get(f"{cls.BASE_URL}/products?filter[product_id]={product_id}&include=custom_fields", headers=cls.get_headers())
+        
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.text}")
+        
+      
+        return response.json()
