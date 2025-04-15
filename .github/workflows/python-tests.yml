@@ -1,0 +1,35 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install python-dotenv  # Ensure dotenv is installed
+
+      - name: Set environment variables from secrets
+        run: |
+          echo "OPEN_API_KEY=${{ secrets.OPEN_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: |
+          pytest
