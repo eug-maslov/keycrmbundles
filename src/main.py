@@ -1,7 +1,7 @@
 
 
 
-import KeycrmOpenApi
+import src.KeycrmOpenApi as KeycrmOpenApi
 
 
 def main():
