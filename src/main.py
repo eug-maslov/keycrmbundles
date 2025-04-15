@@ -26,7 +26,7 @@ def main():
     
     for bundle in bundles:
 
-        bundle_data = get_product_data_by_sku(bundle.sku)
+        bundle_data = KeycrmOpenApi.get_product_data_by_id(bundle["product_id"])
 
         bundle_custom_field = bundle_data[BUNDLE_CUSTOM_FIELD_ID]
 
