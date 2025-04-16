@@ -1,6 +1,7 @@
 
 
 
+import os
 import src.KeycrmOpenApi as KeycrmOpenApi
 
 
@@ -11,7 +12,7 @@ def main():
     order_id = 71588
 
 
-
+    BUNDLE_CUSTOM_FIELD_ID = os.getenv("BUNDLE_CUSTOM_FIELD_ID")
 
     order_data = KeycrmOpenApi.get_order_data(order_id)
 
@@ -33,9 +34,11 @@ def main():
         if bundle_custom_field != None:
             
 
-            products_skus = get_products_skus_from_bundle_custom_field(bundle_custom_field)
+            products_from_bundle_data = KeycrmOpenApi.get_products_data_from_bundle_custom_field(bundle_custom_field)
 
-            add_products_to_order_by_skus(products_skus)
+            products = get_full_products_data_from_bundle_data(products_from_bundle_data)
+
+            KeycrmApi.add_products_to_order(products)
 
             
 
