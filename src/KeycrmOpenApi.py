@@ -38,4 +38,30 @@ class KeycrmOpenApi:
             raise Exception(f"Error {response.status_code}: {response.text}")
         
       
-        return response.json()
+        return response.json() 
+    
+
+    @classmethod 
+    def get_products_data_by_skus_and_quantities(cls, products_skus_and_quantities):
+      
+      
+        products_skus_string = ",".join(products_skus_and_quantities.keys())
+
+        print(products_skus_string)
+
+        response = requests.get(f"{cls.BASE_URL}/offers?filter[sku]={products_skus_string}&include=product&limit=50", headers=cls.get_headers())
+        
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.text}")
+        
+      
+        response_data = response.json() 
+
+        for product in response_data["data"]:
+            sku = product["sku"]
+            if sku in products_skus_and_quantities:
+                product["quantity"] = products_skus_and_quantities[sku]
+
+        return response_data
+
+  

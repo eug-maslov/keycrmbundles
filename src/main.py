@@ -2,8 +2,11 @@
 
 
 import os
-import src.KeycrmOpenApi as KeycrmOpenApi
 
+from KeycrmOpenApi import KeycrmOpenApi
+from BundleHelper import BundleHelper
+from ProductsHelper import ProductsHelper
+from KeycrmApi import KeycrmApi
 
 def main():
 
@@ -21,28 +24,41 @@ def main():
     bundles = []
 
     for product in order_products:
-        if "[bundle]" in product.name:
+    
+        if "[bundle]" in product["name"]:
             bundles.append(product)
 
-    
+
     for bundle in bundles:
 
-        bundle_data = KeycrmOpenApi.get_product_data_by_id(bundle["product_id"])
-
-        bundle_custom_field = bundle_data[BUNDLE_CUSTOM_FIELD_ID]
+    
+        bundle_data = KeycrmOpenApi.get_product_data_by_id(bundle["offer"]["product_id"])
+       
+        bundle_custom_field = next((f["value"] for f in bundle_data["data"][0]["custom_fields"] if f["uuid"] == "CT_1881"), None)
+        print(bundle_custom_field)
 
         if bundle_custom_field != None:
             
 
-            products_from_bundle_data = KeycrmOpenApi.get_products_data_from_bundle_custom_field(bundle_custom_field)
+            products_from_bundle_data = BundleHelper.get_products_data_from_bundle_custom_field(bundle_custom_field)
 
-            products = get_full_products_data_from_bundle_data(products_from_bundle_data)
+            print(products_from_bundle_data[0]["sku"])
 
-            KeycrmApi.add_products_to_order(products)
+            
+
+            skus_and_quantities = {product["sku"]: product["quantity"] for product in products_from_bundle_data}    
+
+            products = KeycrmOpenApi.get_products_data_by_skus_and_quantities(skus_and_quantities)
+        
+            print("---------------")
+            KeycrmApi.add_products_to_order(ProductsHelper.prepare_products_json(products,order_id), order_id)
+
+            print("succesfull add product")
 
             
 
 
 
             
+main() 
 
